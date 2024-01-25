@@ -1,0 +1,30 @@
+html, body {
+  margin:     0;
+  height:     100%;
+  overflow:   hidden;
+  background: #1f1f1f;
+}
+
+#links {
+  stroke: #999999;
+  stroke-width: 1.5px;
+  stroke-opacity: 0.6;
+}
+
+#nodes circle {
+  stroke: #1f1f1f;
+  stroke-width: 1.5px;
+}
+
+#nodes text {
+  fill: white;
+  font-size: 11px;
+  font-family: sans-serif;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+#nodes rect {
+  fill: #252525bb;
+  pointer-events: none;
+}
