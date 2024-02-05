@@ -10,15 +10,15 @@ class Graph {
   constructor() {
     this.svg = null;
 
-    this.nodes   = null;
-    this.lines   = null;
+    this.nodes = null;
+    this.lines = null;
 
     this.focus = null;
   }
 
   // update graph data
   update(links, titles) {
-    this.links = links;
+    this.links  = links;
     this.titles = titles;
 
     this.create();
@@ -57,13 +57,13 @@ class Graph {
     // create svg
     this.svg = d3.select('body')
       .append('svg')
-        .attr('width', width)
+        .attr('width',  width)
         .attr('height', height)
         .attr('viewBox', [-width / 2 * 1.5, -height / 2 * 1.5, width * 1.5, height * 1.5]);
 
     // create simulation
     const simulation = d3.forceSimulation(nodesData)
-      .force('link', d3.forceLink(linksData).id(({ id }) => id).distance(100))
+      .force('link',   d3.forceLink(linksData).id(({ id }) => id).distance(100))
       .force('charge', d3.forceManyBody().strength(-500))
       .force('x', d3.forceX())
       .force('y', d3.forceY());
