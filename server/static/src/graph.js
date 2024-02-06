@@ -69,8 +69,8 @@ class Graph {
       .force('y', d3.forceY());
 
     // create elements
-    this.lines   = new Links(linksData, this.svg);
-    this.nodes   = new Nodes(nodesData, this.links, this.titles, this.svg, simulation);
+    this.lines = new Links(linksData, this.svg);
+    this.nodes = new Nodes(nodesData, this.links, this.titles, this.svg, simulation);
 
     // update lines and nodes
     simulation.on('tick', () => {
