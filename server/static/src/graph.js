@@ -64,7 +64,7 @@ class Graph {
     // create simulation
     const simulation = d3.forceSimulation(nodesData)
       .force('link',   d3.forceLink(linksData).id(({ id }) => id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-500))
+      .force('charge', d3.forceManyBody().strength(-400))
       .force('x', d3.forceX())
       .force('y', d3.forceY());
 
