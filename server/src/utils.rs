@@ -1,8 +1,12 @@
-use pandoc::{InputFormat, OutputKind, MarkdownExtension, PandocOutput};
+use markdown::{Options, ParseOptions, Constructs};
 use scraper::{Html, Selector};
+
+use gray_matter::Matter;
+use gray_matter::engine::YAML;
 
 use anyhow::{Result, Context};
 
+use std::fs;
 use std::path::{Path, PathBuf};
 
 // path basename
@@ -20,47 +24,47 @@ pub fn basename(path: &Path) -> Result<String> {
 
 // file info
 pub fn file_info(file: &PathBuf) -> Result<(String, Vec<String>)> {
-    // pandoc generator
-    let mut pandoc = pandoc::new();
+    // file data
+    let content  = fs::read_to_string(file)?;
+    let basename = basename(file)?;
 
-    // input and output
-    pandoc.add_input(&file);
-    pandoc.set_output(OutputKind::Pipe);
+    // frontmatter title
+    let title =
+        Matter::<YAML>::new()
+            .parse(&content)
+            .data
+            .context("")?["title"]
+            .as_string()
+            .unwrap_or(basename);
 
-    // allow wikilinks
-    pandoc.set_input_format(
-        InputFormat::CommonmarkX,
-        vec![MarkdownExtension::Other(String::from("wikilinks_title_after_pipe"))]
-    );
+    // parse markdown
+    let doc = markdown::to_html_with_options(
+        &content,
+        &markdown_options()
+    ).unwrap();
 
-    // selectors
-    let title_selector = Selector::parse("h1").unwrap();
-    let links_selector = Selector::parse("a[href]").unwrap();
+    // outgoing links
+    let outgoing =
+        Html::parse_document(&doc)
+            .select(&Selector::parse("a[href]").unwrap())
+            .filter_map(|link| {
+                link.attr("href")
+                    .map(|href| href.to_string())
+            }).collect();
 
-    if let PandocOutput::ToBuffer(doc) = pandoc.execute()? {
-        let basename = basename(file)?;
-        let html = Html::parse_document(&doc);
+    Ok((title, outgoing))
+}
 
-        // title from heading
-        let title =
-            html.select(&title_selector)
-                .next()
-                .map(|elem| {
-                    elem
-                        .text()
-                        .next()
-                        .unwrap_or(&basename)
-                })
-                .unwrap_or(&basename)
-                .to_string();
-
-        // outgoing links
-        let outgoing = html.select(&links_selector).filter_map(|link| {
-            link.attr("href").map(|href| href.to_string())
-        }).collect();
-
-        Ok((title, outgoing))
-    } else {
-        unreachable!()
+// gfm options with frontmatter
+pub fn markdown_options() -> Options {
+    Options {
+        parse: ParseOptions {
+            constructs: Constructs {
+                frontmatter: true,
+                ..Constructs::gfm()
+            },
+            ..ParseOptions::default()
+        },
+        ..Options::gfm()
     }
 }

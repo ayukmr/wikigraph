@@ -7,8 +7,10 @@ edition = "2021"
 rocket = { version = "0.5", features = ["json"] }
 serde  = { version = "1.0", features = ["derive"] }
 
-glob   = "0.3"
-pandoc = "0.8"
+markdown    = "1.0.0-alpha.16"
+gray_matter = "0.2"
+
+glob    = "0.3"
 scraper = "0.18"
 
 rayon   = "1.8"
