@@ -1,3 +1,5 @@
+@import 'https://rsms.me/inter/inter.css';
+
 html, body {
   margin:     0;
   height:     100%;
@@ -23,7 +25,7 @@ html, body {
 #nodes text {
   fill: white;
   font-size: 11px;
-  font-family: sans-serif;
+  font-family: Inter, sans-serif;
   text-anchor: middle;
   pointer-events: none;
 }
