@@ -8,12 +8,12 @@ let g:loaded_wikigraph = 1
 let g:wikigraph#host = get(g:, 'wikigraph#host', 'http://localhost:8000')
 
 " focus file
-func! wikigraph#focus_file()
+func! wikigraph#focus_file() abort
   let l:file = expand('%:t:r')
   call wikigraph#focus(l:file)
 endfunc
 
 " focus index
-func! wikigraph#focus(file)
+func! wikigraph#focus(file) abort
   call jobstart(['curl', '-X', 'POST', g:wikigraph#host . '/focus/' . a:file])
 endfunc
