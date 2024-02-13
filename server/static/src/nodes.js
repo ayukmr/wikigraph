@@ -64,7 +64,9 @@ class Nodes {
     this.nodes
       .selectAll('text')
         .transition(getTransition(200))
-        .style('opacity', focused ? (({ id }) => this.connected(id, this.focus) ? 1 : 0.35) : 0);
+        .style('opacity', focused ? (({ id }) => (
+          this.connected(id, this.focus) ? 1 : 0.35
+        )) : 0);
 
     this.nodes
       .selectAll('rect')
@@ -74,7 +76,11 @@ class Nodes {
     this.nodes
       .selectAll('circle')
         .transition(getTransition(200))
-        .attr('fill', ({ id }) => !focused || this.connected(id, this.focus) ? this.color(this.getSize(id)) : '#373739');
+        .attr('fill', ({ id }) => (
+          !focused || this.connected(id, this.focus)
+            ? this.color(this.getSize(id))
+            : '#373739'
+        ));
   }
 
   // update focus
@@ -84,7 +90,11 @@ class Nodes {
 
   // node size based on connections
   getSize = (id) => (
-    (this.links[id]?.length || 0) + Object.values(this.links).flat(1).filter((file) => file === id).length
+    (this.links[id]?.length || 0) +
+    Object.values(this.links)
+      .flat(1)
+      .filter((file) => file === id)
+      .length
   );
 
   // check if nodes connected
