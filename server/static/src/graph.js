@@ -1,8 +1,9 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7/+esm';
 import { getTransition } from './utils.js';
 
-import Nodes from './nodes.js';
-import Links from './links.js';
+import Nodes   from './nodes.js';
+import Links   from './links.js';
+import Circles from './circles.js';
 
 // d3 graph
 class Graph {
@@ -10,16 +11,24 @@ class Graph {
   constructor() {
     this.svg = null;
 
-    this.nodes = null;
-    this.lines = null;
+    this.nodes   = null;
+    this.lines   = null;
+    this.circles = null;
 
-    this.focus = null;
+    this.focus    = null;
+    this.interval = null;
   }
 
   // update graph data
   update(links, titles) {
     this.links  = links;
     this.titles = titles;
+
+    if (this.interval) {
+      // stop interval
+      this.interval.stop();
+      this.interval = null;
+    }
 
     this.create();
   }
@@ -32,6 +41,7 @@ class Graph {
     if (this.svg) {
       this.nodes.updateFocus(newFocus);
       this.lines.updateFocus(newFocus);
+      this.circles.map((c) => c.updateFocus(newFocus));
     }
   }
 
@@ -69,8 +79,9 @@ class Graph {
       .force('y', d3.forceY());
 
     // create elements
-    this.lines = new Links(linksData, this.svg);
-    this.nodes = new Nodes(nodesData, this.links, this.titles, this.svg, simulation);
+    this.lines   = new Links(linksData, this.svg);
+    this.circles = [0, 50].map((offset) => new Circles(offset, linksData, this.svg));
+    this.nodes   = new Nodes(nodesData, this.links, this.titles, this.svg, simulation);
 
     // update lines and nodes
     simulation.on('tick', () => {
@@ -79,7 +90,7 @@ class Graph {
     });
 
     // run every interval
-    d3.interval(() => {
+    this.interval = d3.interval(() => {
       const focused = this.focus && this.links[this.focus];
 
       const elem = d3.select(`#${this.focus}`);
@@ -103,6 +114,7 @@ class Graph {
       // update elements
       this.nodes.interval(focused);
       this.lines.interval(focused);
+      this.circles.map((c) => c.interval(focused));
     });
   }
 }

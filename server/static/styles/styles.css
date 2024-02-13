@@ -11,6 +11,10 @@ html, body {
   stroke-opacity: 0.6;
 }
 
+#circles circle {
+  fill: #999999;
+}
+
 #nodes circle {
   stroke: #1f1f1f;
   stroke-width: 1.5px;
