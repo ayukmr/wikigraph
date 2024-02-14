@@ -21,8 +21,7 @@ class Circles {
   // run every interval
   interval(focused) {
     // update amount through
-    this.amountThrough += 0.5;
-    this.amountThrough %= 100;
+    this.amountThrough = (this.amountThrough + 0.5) % 100;
 
     // update positions
     this.circles
