@@ -38,11 +38,7 @@ impl Data {
     pub fn update(&mut self) -> Result<()> {
         // path from args
         let glob_path = Path::new(
-            &std::env::args()
-                .into_iter()
-                .skip(1)
-                .next()
-                .context("")?
+            &std::env::args().nth(1).context("")?
         ).join("**/*.md");
 
         let glob_str =
@@ -51,7 +47,7 @@ impl Data {
                 .context("")?;
 
         // glob files
-        let files = glob::glob(&glob_str)?
+        let files = glob::glob(glob_str)?
             .filter_map(Result::ok)
             .filter(|file| {
                 basename(file)
