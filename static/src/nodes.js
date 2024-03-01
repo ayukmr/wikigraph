@@ -21,9 +21,9 @@ class Nodes {
       .append('g')
           .attr('id', ({ id }) => id)
           .call(d3.drag()
-          .on('start', this.dragStarted())
-          .on('drag', this.dragged())
-          .on('end', this.dragEnded()));
+          .on('start', this.dragStarted)
+          .on('drag', this.dragged)
+          .on('end', this.dragEnded));
 
     // node circles
     this.nodes.append('circle')
@@ -103,39 +103,33 @@ class Nodes {
   );
 
   // node drag started
-  dragStarted() {
-    return (e, d) => {
-      if (!e.active) {
-        this.simulation.alphaTarget(0.3).restart();
-      }
+  dragStarted = (e, d) => {
+    if (!e.active) {
+      this.simulation.alphaTarget(0.3).restart();
+    }
 
-      this.dragged()(e, d);
-    };
-  }
+    this.dragged(e, d);
+  };
 
   // node dragged
-  dragged() {
-    return (e, d) => {
-      if (d.id === this.focus) {
-        return;
-      }
+  dragged = (e, d) => {
+    if (d.id === this.focus) {
+      return;
+    }
 
-      d.fx = e.x;
-      d.fy = e.y;
-    };
-  }
+    d.fx = e.x;
+    d.fy = e.y;
+  };
 
   // node drag ended
-  dragEnded() {
-    return (e, d) => {
-      if (!e.active) {
-        this.simulation.alphaTarget(0);
-      }
+  dragEnded = (e, d) => {
+    if (!e.active) {
+      this.simulation.alphaTarget(0);
+    }
 
-      d.fx = null;
-      d.fy = null;
-    };
-  }
+    d.fx = null;
+    d.fy = null;
+  };
 }
 
 export default Nodes;
